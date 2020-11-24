@@ -1,11 +1,17 @@
 ---
 title: "Historical horse population in Canada"
-output: github_document
+bibliography: horse_refs.bib
+params:
+  province: "Alberta"
+output: 
+  github_document:
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
+library(knitr)
 ```
 
 ## Aim
@@ -30,7 +36,7 @@ Horse population data were sourced from the [Government of Canada's Open Data we
 
 ## Methods
 
-The R programming language and the following R packages were used to perform the analysis: knitr and tidyverse. The code used to perform the analysis and create this report can be found here: https://github.com/ttimbers/equine_numbers_value_canada_rmd.
+The R programming language [@R] and the following R packages were used to perform the analysis: knitr [@knitr] and tidyverse [@tidyverse]. The code used to perform the analysis and create this report can be found here: https://github.com/ttimbers/equine_numbers_value_canada_rmd.
 
 
 ## Results
@@ -48,23 +54,26 @@ horse_plot <- ggplot(horse_pop, aes(x = Ref_Date, y = Value)) +
 horse_plot
 ```
 
+Figure 1. Horse populations for all provinces in Canada between 1940 - 1972.
+
 We can see from the visualisation above that Ontario, Saskatchewan and Alberta have had the highest horse populations in Canada. All provinces have had a decline in horse
 populations since 1940. This is likely due to the rebound of the Canadian automotive
 industry after the Great Depression and the Second World War. An interesting follow-up visualization would be car sales per year for each Province over the time period visualised above to further support this hypothesis. 
 
 Next we look at the range of the number horses for each provinces at any time point between 1940 - 1972:
 
-```{r max horse table}
+```{r max horse table, warning=FALSE}
 max_horses <- horse_pop %>% 
   select(GEO, Value) %>% 
   rename(Province = GEO) %>% 
   group_by(Province) %>% 
   summarize(Maximum = max(Value),
             Minimum = min(Value))
-max_horses
+kable(max_horses, 
+      caption = "Table 1. Maximum and minimum number of horses for each province between 1940 - 1972")
 ```
 
-Below we zoom in and look at the province of Alberta:
+Below we zoom in and look at the province of `r params$province`:
 
 ```{r plot province, fig.width=5, fig.height=4}
 province_plot <- horse_pop %>% 
@@ -80,3 +89,7 @@ province_plot <- horse_pop %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 province_plot
 ```
+
+Figure 2. Horse populations for `r params$province` between 1940 - 1972.
+
+# References
